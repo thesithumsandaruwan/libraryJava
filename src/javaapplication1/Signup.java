@@ -4,6 +4,8 @@
  */
 package javaapplication1;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Eranda sanjeewa
@@ -32,11 +34,13 @@ public class Signup extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         Password = new javax.swing.JPasswordField();
         Name = new javax.swing.JTextField();
         Address = new javax.swing.JTextField();
         Mobile = new javax.swing.JTextField();
         Email = new javax.swing.JTextField();
+        RoleComboBox = new javax.swing.JComboBox<>();
         CreateButton = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
@@ -61,6 +65,9 @@ public class Signup extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setText("Password");
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel7.setText("Role");
+
         Password.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
         Name.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -70,6 +77,9 @@ public class Signup extends javax.swing.JFrame {
         Mobile.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
         Email.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+
+        RoleComboBox.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        RoleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MEMBER", "LIBRARIAN", "ADMIN" }));
 
         CreateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         CreateButton.setText("Create an Account");
@@ -122,6 +132,11 @@ public class Signup extends javax.swing.JFrame {
                         .addGap(106, 106, 106)
                         .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jLabel7)
+                        .addGap(134, 134, 134)
+                        .addComponent(RoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(250, 250, 250)
                         .addComponent(CreateButton)
                         .addGap(6, 6, 6)
@@ -155,6 +170,10 @@ public class Signup extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(RoleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(CreateButton)
@@ -166,11 +185,72 @@ public class Signup extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateButtonActionPerformed
-        // TODO add your handling code here:
-        // After creating account, go directly to home page
-        HomePage hp = new HomePage();
-        hp.setVisible(true);
-        dispose();
+        // Get form data
+        String name = Name.getText().trim();
+        String address = Address.getText().trim();
+        String mobile = Mobile.getText().trim();
+        String email = Email.getText().trim();
+        String password = new String(Password.getPassword()).trim();
+        String selectedRole = (String) RoleComboBox.getSelectedItem();
+        
+        // Validate form data
+        if (name.isEmpty() || address.isEmpty() || mobile.isEmpty() || 
+            email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Please fill in all fields!", 
+                "Validation Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Validate email format
+        if (!email.contains("@") || !email.contains(".")) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter a valid email address!", 
+                "Validation Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Validate mobile number (basic check)
+        if (mobile.length() < 10) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter a valid mobile number!", 
+                "Validation Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            // Create new user object with role
+            UserDAO.User newUser = new UserDAO.User(name, address, mobile, email, password, 
+                                                   UserDAO.UserRole.valueOf(selectedRole));
+            
+            // Register the user
+            boolean success = UserDAO.registerUser(newUser);
+            
+            if (success) {
+                // Clear form fields
+                Name.setText("");
+                Address.setText("");
+                Mobile.setText("");
+                Email.setText("");
+                Password.setText("");
+                RoleComboBox.setSelectedIndex(0);
+                
+                // Navigate back to login page
+                FirstPage fp = new FirstPage();
+                fp.setVisible(true);
+                dispose();
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_CreateButtonActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -220,6 +300,7 @@ public class Signup extends javax.swing.JFrame {
     private javax.swing.JTextField Mobile;
     private javax.swing.JTextField Name;
     private javax.swing.JPasswordField Password;
+    private javax.swing.JComboBox<String> RoleComboBox;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -227,5 +308,6 @@ public class Signup extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     // End of variables declaration//GEN-END:variables
 }

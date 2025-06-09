@@ -4,17 +4,64 @@
  */
 package javaapplication1;
 
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
+
 /**
  *
  * @author USER
  */
 public class Book_Details extends javax.swing.JFrame {
 
+    private DefaultTableModel tableModel;
+
     /**
      * Creates new form Book_Details
      */
     public Book_Details() {
         initComponents();
+        initializeTable();
+        loadBookData();
+    }
+    
+    /**
+     * Initialize the table model
+     */
+    private void initializeTable() {
+        tableModel = (DefaultTableModel) jTable1.getModel();
+        // Clear any existing rows
+        tableModel.setRowCount(0);
+    }
+    
+    /**
+     * Load book data from database
+     */
+    private void loadBookData() {
+        try {
+            List<BookDAO.Book> books = BookDAO.getAllBooks();
+            
+            // Clear existing data
+            tableModel.setRowCount(0);
+            
+            // Add books to table
+            for (BookDAO.Book book : books) {
+                Object[] row = {
+                    book.getBookNo(),
+                    book.getBookName(),
+                    book.getAuthor(),
+                    book.getPublishYear()
+                };
+                tableModel.addRow(row);
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error loading book data: " + e.getMessage(), 
+                "Database Error", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -102,17 +149,102 @@ public class Book_Details extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // ADD button action - for now just go back to main menu
-        SecondPage sp = new SecondPage();
-        sp.setVisible(true);
-        dispose();
+        // ADD button action - show dialog to add new book
+        String bookNo = JOptionPane.showInputDialog(this, "Enter Book Number:");
+        if (bookNo == null || bookNo.trim().isEmpty()) return;
+        
+        String bookName = JOptionPane.showInputDialog(this, "Enter Book Name:");
+        if (bookName == null || bookName.trim().isEmpty()) return;
+        
+        String author = JOptionPane.showInputDialog(this, "Enter Author:");
+        if (author == null || author.trim().isEmpty()) return;
+        
+        String publishYearStr = JOptionPane.showInputDialog(this, "Enter Publish Year:");
+        if (publishYearStr == null || publishYearStr.trim().isEmpty()) return;
+        
+        try {
+            int publishYear = Integer.parseInt(publishYearStr.trim());
+            
+            // Create new book
+            BookDAO.Book newBook = new BookDAO.Book(
+                bookNo.trim(), 
+                bookName.trim(), 
+                author.trim(), 
+                publishYear
+            );
+            
+            boolean success = BookDAO.addBook(newBook);
+            
+            if (success) {
+                // Refresh the table
+                loadBookData();
+            }
+            
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter a valid year!", 
+                "Invalid Input", 
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error adding book: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // DELETE button action - for now just go back to main menu
-        SecondPage sp = new SecondPage();
-        sp.setVisible(true);
-        dispose();
+        // DELETE button action - delete selected book
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "Please select a book to delete!", 
+                "No Selection", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Get book number from selected row
+        String bookNo = (String) tableModel.getValueAt(selectedRow, 0);
+        String bookName = (String) tableModel.getValueAt(selectedRow, 1);
+        
+        // Confirm deletion
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to delete book:\n" + 
+            "Book No: " + bookNo + "\n" + 
+            "Book Name: " + bookName, 
+            "Confirm Delete", 
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                // First get the book to get its ID
+                BookDAO.Book book = BookDAO.getBookByBookNo(bookNo);
+                
+                if (book != null) {
+                    boolean success = BookDAO.deleteBook(book.getBookId());
+                    
+                    if (success) {
+                        // Refresh the table
+                        loadBookData();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, 
+                        "Book not found!", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error deleting book: " + e.getMessage(), 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

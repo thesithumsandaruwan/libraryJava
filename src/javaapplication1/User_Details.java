@@ -4,17 +4,65 @@
  */
 package javaapplication1;
 
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
+
 /**
  *
  * @author USER
  */
 public class User_Details extends javax.swing.JFrame {
 
+    private DefaultTableModel tableModel;
+
     /**
      * Creates new form User_Details
      */
     public User_Details() {
         initComponents();
+        initializeTable();
+        loadUserData();
+    }
+    
+    /**
+     * Initialize the table model
+     */
+    private void initializeTable() {
+        tableModel = (DefaultTableModel) jTable1.getModel();
+        // Clear any existing rows
+        tableModel.setRowCount(0);
+    }
+    
+    /**
+     * Load user data from database
+     */
+    private void loadUserData() {
+        try {
+            List<UserDAO.User> users = UserDAO.getAllUsers();
+            
+            // Clear existing data
+            tableModel.setRowCount(0);
+            
+            // Add users to table
+            for (UserDAO.User user : users) {
+                Object[] row = {
+                    user.getUserId(),
+                    user.getName(),
+                    user.getAddress(),
+                    user.getMobileNo(),
+                    user.getEmail()
+                };
+                tableModel.addRow(row);
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error loading user data: " + e.getMessage(), 
+                "Database Error", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -102,17 +150,66 @@ public class User_Details extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Add New Member button action - for now just go back to main menu
-        SecondPage sp = new SecondPage();
-        sp.setVisible(true);
+        // Add New Member button action - redirect to Signup page
+        Signup signup = new Signup();
+        signup.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // Delete button action - for now just go back to main menu
-        SecondPage sp = new SecondPage();
-        sp.setVisible(true);
-        dispose();
+        // Delete button action - delete selected user
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "Please select a user to delete!", 
+                "No Selection", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Get user info from selected row
+        int userId = (Integer) tableModel.getValueAt(selectedRow, 0);
+        String userName = (String) tableModel.getValueAt(selectedRow, 1);
+        String userEmail = (String) tableModel.getValueAt(selectedRow, 4);
+        
+        // Check if trying to delete current logged-in user
+        UserDAO.User currentUser = SessionManager.getCurrentUser();
+        if (currentUser != null && currentUser.getUserId() == userId) {
+            JOptionPane.showMessageDialog(this, 
+                "You cannot delete your own account while logged in!", 
+                "Cannot Delete", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Confirm deletion
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to delete user:\n" + 
+            "ID: " + userId + "\n" + 
+            "Name: " + userName + "\n" + 
+            "Email: " + userEmail, 
+            "Confirm Delete", 
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                boolean success = UserDAO.deleteUser(userId);
+                
+                if (success) {
+                    // Refresh the table
+                    loadUserData();
+                }
+                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error deleting user: " + e.getMessage(), 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

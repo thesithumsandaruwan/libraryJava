@@ -4,6 +4,9 @@
  */
 package javaapplication1;
 
+import javax.swing.JOptionPane;
+import javax.swing.JButton;
+
 /**
  *
  * @author Eranda sanjeewa
@@ -15,6 +18,54 @@ public class SecondPage extends javax.swing.JFrame {
      */
     public SecondPage() {
         initComponents();
+        setupRoleBasedAccess();
+    }
+    
+    /**
+     * Setup UI based on current user's role
+     */
+    private void setupRoleBasedAccess() {
+        UserDAO.User currentUser = SessionManager.getCurrentUser();
+        
+        if (currentUser == null) {
+            // If no user logged in, redirect to login
+            JOptionPane.showMessageDialog(this, 
+                "Please log in to continue!", 
+                "Authentication Required", 
+                JOptionPane.WARNING_MESSAGE);
+            FirstPage fp = new FirstPage();
+            fp.setVisible(true);
+            dispose();
+            return;
+        }
+        
+        // Set title based on role
+        switch (currentUser.getUserRole()) {
+            case ADMIN:
+                setTitle("Library Management System - Admin Panel");
+                // Admin has access to everything
+                addAdminButtons();
+                break;
+            case LIBRARIAN:
+                setTitle("Library Management System - Librarian Panel");
+                // Librarian has access to books and members, but not librarian management
+                addLibrarianButtons();
+                break;
+            case MEMBER:
+                setTitle("Library Management System - Member Panel");
+                // Members shouldn't reach this page, redirect to HomePage
+                JOptionPane.showMessageDialog(this, 
+                    "Members don't have access to this section!", 
+                    "Access Denied", 
+                    JOptionPane.WARNING_MESSAGE);
+                HomePage hp = new HomePage();
+                hp.setVisible(true);
+                dispose();
+                return;
+        }
+        
+        // Add role indicator
+        System.out.println("Logged in as: " + currentUser.getName() + " (" + currentUser.getUserRole() + ")");
     }
 
     /**
@@ -31,36 +82,39 @@ public class SecondPage extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(null); // Use null layout instead of AbsoluteLayout
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jButton1.setText("Borrow Book");
+        jButton1.setBounds(150, 70, 250, 50);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, -1));
+        getContentPane().add(jButton1);
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jButton2.setText("Return Book");
+        jButton2.setBounds(150, 180, 251, 50);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, 251, -1));
+        getContentPane().add(jButton2);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/javaapplication1/Images/New Background.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 540, -1));
+        jLabel1.setBounds(0, 0, 540, 400);
+        getContentPane().add(jLabel1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        Book_Details bd = new Book_Details();
-        bd.setVisible(true);
+        // Borrow Book button - navigate to BorrowingManagement
+        BorrowingManagement bm = new BorrowingManagement();
+        bm.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -111,4 +165,107 @@ public class SecondPage extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * Add additional navigation buttons for Admin users
+     */
+    private void addAdminButtons() {
+        // Admin gets access to all features
+        
+        // Add Book Details button
+        JButton bookDetailsBtn = new JButton("Book Details");
+        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
+        bookDetailsBtn.setBounds(50, 290, 200, 50);
+        bookDetailsBtn.addActionListener(e -> {
+            Book_Details bd = new Book_Details();
+            bd.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(bookDetailsBtn);
+        
+        // Add User Details button
+        JButton userDetailsBtn = new JButton("User Details");
+        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
+        userDetailsBtn.setBounds(270, 290, 200, 50);
+        userDetailsBtn.addActionListener(e -> {
+            User_Details ud = new User_Details();
+            ud.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(userDetailsBtn);
+        
+        // Add Admin Panel button
+        JButton adminPanelBtn = new JButton("Admin Panel");
+        adminPanelBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
+        adminPanelBtn.setBounds(160, 360, 200, 50);
+        adminPanelBtn.addActionListener(e -> {
+            AdminPanel ap = new AdminPanel();
+            ap.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(adminPanelBtn);
+        
+        // Add logout button
+        JButton logoutBtn = new JButton("Logout");
+        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        logoutBtn.setBounds(450, 20, 80, 30);
+        logoutBtn.addActionListener(e -> {
+            SessionManager.logout();
+            JOptionPane.showMessageDialog(this, "Logged out successfully!");
+            FirstPage fp = new FirstPage();
+            fp.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(logoutBtn);
+        
+        // Refresh the layout
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Add navigation buttons for Librarian users
+     */
+    private void addLibrarianButtons() {
+        // Librarians get access to book and user management, but not admin features
+        
+        // Add Book Details button
+        JButton bookDetailsBtn = new JButton("Book Details");
+        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
+        bookDetailsBtn.setBounds(50, 290, 200, 50);
+        bookDetailsBtn.addActionListener(e -> {
+            Book_Details bd = new Book_Details();
+            bd.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(bookDetailsBtn);
+        
+        // Add User Details button
+        JButton userDetailsBtn = new JButton("User Details");
+        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
+        userDetailsBtn.setBounds(270, 290, 200, 50);
+        userDetailsBtn.addActionListener(e -> {
+            User_Details ud = new User_Details();
+            ud.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(userDetailsBtn);
+        
+        // Add logout button
+        JButton logoutBtn = new JButton("Logout");
+        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        logoutBtn.setBounds(450, 20, 80, 30);
+        logoutBtn.addActionListener(e -> {
+            SessionManager.logout();
+            JOptionPane.showMessageDialog(this, "Logged out successfully!");
+            FirstPage fp = new FirstPage();
+            fp.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(logoutBtn);
+        
+        // Refresh the layout
+        revalidate();
+        repaint();
+    }
 }

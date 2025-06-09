@@ -4,6 +4,8 @@
  */
 package javaapplication1;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Eranda sanjeewa
@@ -107,10 +109,73 @@ public class FirstPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Login button action - navigate to SecondPage (main menu)
-        SecondPage sp = new SecondPage();
-        sp.setVisible(true);
-        dispose();
+        // Get login credentials
+        String userIdOrEmail = jTextField1.getText().trim();
+        String password = new String(jPasswordField2.getPassword()).trim();
+        
+        // Validate input
+        if (userIdOrEmail.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter both email and password!", 
+                "Login Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            // Authenticate user
+            UserDAO.User user = UserDAO.authenticateUser(userIdOrEmail, password);
+            
+            if (user != null) {
+                // Set current session
+                SessionManager.setCurrentUser(user);
+                
+                JOptionPane.showMessageDialog(this, 
+                    "Welcome " + user.getName() + "!", 
+                    "Login Successful", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                
+                // Navigate based on user role
+                switch (user.getUserRole()) {
+                    case MEMBER:
+                        // Members go to HomePage
+                        HomePage hp = new HomePage();
+                        hp.setVisible(true);
+                        break;
+                    case LIBRARIAN:
+                        // Librarians go to SecondPage (main menu with book and user management)
+                        SecondPage sp = new SecondPage();
+                        sp.setVisible(true);
+                        break;
+                    case ADMIN:
+                        // Admins go to SecondPage (main menu with full access)
+                        SecondPage asp = new SecondPage();
+                        asp.setVisible(true);
+                        break;
+                    default:
+                        // Default to SecondPage
+                        SecondPage dsp = new SecondPage();
+                        dsp.setVisible(true);
+                        break;
+                }
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "Invalid email or password!", 
+                    "Login Failed", 
+                    JOptionPane.ERROR_MESSAGE);
+                
+                // Clear password field
+                jPasswordField2.setText("");
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Login error: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
