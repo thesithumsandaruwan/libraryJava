@@ -6,6 +6,7 @@ package javaapplication1;
 
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 
 /**
  *
@@ -17,8 +18,32 @@ public class SecondPage extends javax.swing.JFrame {
      * Creates new form SecondPage
      */
     public SecondPage() {
-        initComponents();
+        try {
+            initComponents();
+        } catch (Exception e) {
+            // If NetBeans form initialization fails, create a simple fallback UI
+            System.err.println("Form initialization failed, creating fallback UI: " + e.getMessage());
+            initSimpleComponents();
+        }
         setupRoleBasedAccess();
+    }
+    
+    /**
+     * Fallback UI initialization when NetBeans form fails
+     */
+    private void initSimpleComponents() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Library Management System");
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        getContentPane().setLayout(null);
+        
+        // Create basic label
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36));
+        jLabel1.setText("Library Management System");
+        jLabel1.setBounds(50, 20, 500, 50);
+        getContentPane().add(jLabel1);
     }
     
     /**
@@ -170,12 +195,26 @@ public class SecondPage extends javax.swing.JFrame {
      * Add additional navigation buttons for Admin users
      */
     private void addAdminButtons() {
-        // Admin gets access to all features
+        // Set a better window size for admin view
+        setSize(900, 650);
+        setLocationRelativeTo(null);
+        
+        // Create a welcome message
+        JLabel welcomeLabel = new JLabel("Administrator Dashboard");
+        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 1, 32));
+        welcomeLabel.setBounds(280, 30, 400, 50);
+        getContentPane().add(welcomeLabel);
+        
+        // Create section for book management
+        JLabel bookSectionLabel = new JLabel("Book Management");
+        bookSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        bookSectionLabel.setBounds(100, 120, 200, 30);
+        getContentPane().add(bookSectionLabel);
         
         // Add Book Details button
-        JButton bookDetailsBtn = new JButton("Book Details");
-        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
-        bookDetailsBtn.setBounds(50, 290, 200, 50);
+        JButton bookDetailsBtn = new JButton("Manage Books");
+        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        bookDetailsBtn.setBounds(100, 160, 200, 60);
         bookDetailsBtn.addActionListener(e -> {
             Book_Details bd = new Book_Details();
             bd.setVisible(true);
@@ -183,10 +222,16 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(bookDetailsBtn);
         
+        // Create section for user management
+        JLabel userSectionLabel = new JLabel("User Management");
+        userSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        userSectionLabel.setBounds(350, 120, 200, 30);
+        getContentPane().add(userSectionLabel);
+        
         // Add User Details button
-        JButton userDetailsBtn = new JButton("User Details");
-        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
-        userDetailsBtn.setBounds(270, 290, 200, 50);
+        JButton userDetailsBtn = new JButton("Manage Users");
+        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        userDetailsBtn.setBounds(350, 160, 200, 60);
         userDetailsBtn.addActionListener(e -> {
             User_Details ud = new User_Details();
             ud.setVisible(true);
@@ -194,10 +239,16 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(userDetailsBtn);
         
+        // Create section for system administration
+        JLabel adminSectionLabel = new JLabel("System Administration");
+        adminSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        adminSectionLabel.setBounds(600, 120, 250, 30);
+        getContentPane().add(adminSectionLabel);
+        
         // Add Admin Panel button
         JButton adminPanelBtn = new JButton("Admin Panel");
-        adminPanelBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
-        adminPanelBtn.setBounds(160, 360, 200, 50);
+        adminPanelBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        adminPanelBtn.setBounds(600, 160, 200, 60);
         adminPanelBtn.addActionListener(e -> {
             AdminPanel ap = new AdminPanel();
             ap.setVisible(true);
@@ -205,10 +256,39 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(adminPanelBtn);
         
-        // Add logout button
+        // Create section for borrowing management
+        JLabel borrowSectionLabel = new JLabel("Borrowing Management");
+        borrowSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        borrowSectionLabel.setBounds(225, 250, 250, 30);
+        getContentPane().add(borrowSectionLabel);
+        
+        // Add Borrowing Management button
+        JButton borrowingBtn = new JButton("Manage Borrowing");
+        borrowingBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        borrowingBtn.setBounds(225, 290, 200, 60);
+        borrowingBtn.addActionListener(e -> {
+            BorrowingManagement bm = new BorrowingManagement();
+            bm.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(borrowingBtn);
+        
+        // Add System Reports button
+        JButton reportsBtn = new JButton("System Reports");
+        reportsBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        reportsBtn.setBounds(475, 290, 200, 60);
+        reportsBtn.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, 
+                "System Reports feature coming soon!", 
+                "Reports", 
+                JOptionPane.INFORMATION_MESSAGE);
+        });
+        getContentPane().add(reportsBtn);
+        
+        // Add logout button in a better position
         JButton logoutBtn = new JButton("Logout");
-        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
-        logoutBtn.setBounds(450, 20, 80, 30);
+        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 16));
+        logoutBtn.setBounds(750, 20, 100, 40);
         logoutBtn.addActionListener(e -> {
             SessionManager.logout();
             JOptionPane.showMessageDialog(this, "Logged out successfully!");
@@ -217,6 +297,15 @@ public class SecondPage extends javax.swing.JFrame {
             dispose();
         });
         getContentPane().add(logoutBtn);
+        
+        // Add a footer with user info
+        UserDAO.User currentUser = SessionManager.getCurrentUser();
+        if (currentUser != null) {
+            JLabel userInfoLabel = new JLabel("Logged in as: " + currentUser.getName() + " (Administrator)");
+            userInfoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12));
+            userInfoLabel.setBounds(50, 570, 400, 20);
+            getContentPane().add(userInfoLabel);
+        }
         
         // Refresh the layout
         revalidate();
@@ -227,12 +316,26 @@ public class SecondPage extends javax.swing.JFrame {
      * Add navigation buttons for Librarian users
      */
     private void addLibrarianButtons() {
-        // Librarians get access to book and user management, but not admin features
+        // Set a better window size for librarian view
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+        
+        // Create a welcome message
+        JLabel welcomeLabel = new JLabel("Librarian Dashboard");
+        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 1, 32));
+        welcomeLabel.setBounds(250, 30, 300, 50);
+        getContentPane().add(welcomeLabel);
+        
+        // Create section for book management
+        JLabel bookSectionLabel = new JLabel("Book Management");
+        bookSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        bookSectionLabel.setBounds(100, 120, 200, 30);
+        getContentPane().add(bookSectionLabel);
         
         // Add Book Details button
-        JButton bookDetailsBtn = new JButton("Book Details");
-        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
-        bookDetailsBtn.setBounds(50, 290, 200, 50);
+        JButton bookDetailsBtn = new JButton("Manage Books");
+        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        bookDetailsBtn.setBounds(100, 160, 200, 60);
         bookDetailsBtn.addActionListener(e -> {
             Book_Details bd = new Book_Details();
             bd.setVisible(true);
@@ -240,10 +343,16 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(bookDetailsBtn);
         
+        // Create section for user management
+        JLabel userSectionLabel = new JLabel("User Management");
+        userSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        userSectionLabel.setBounds(400, 120, 200, 30);
+        getContentPane().add(userSectionLabel);
+        
         // Add User Details button
-        JButton userDetailsBtn = new JButton("User Details");
-        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 24));
-        userDetailsBtn.setBounds(270, 290, 200, 50);
+        JButton userDetailsBtn = new JButton("Manage Users");
+        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        userDetailsBtn.setBounds(400, 160, 200, 60);
         userDetailsBtn.addActionListener(e -> {
             User_Details ud = new User_Details();
             ud.setVisible(true);
@@ -251,10 +360,27 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(userDetailsBtn);
         
-        // Add logout button
+        // Create section for borrowing management
+        JLabel borrowSectionLabel = new JLabel("Borrowing Management");
+        borrowSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        borrowSectionLabel.setBounds(250, 250, 250, 30);
+        getContentPane().add(borrowSectionLabel);
+        
+        // Add Borrowing Management button
+        JButton borrowingBtn = new JButton("Manage Borrowing");
+        borrowingBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        borrowingBtn.setBounds(250, 290, 200, 60);
+        borrowingBtn.addActionListener(e -> {
+            BorrowingManagement bm = new BorrowingManagement();
+            bm.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(borrowingBtn);
+        
+        // Add logout button in a better position
         JButton logoutBtn = new JButton("Logout");
-        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
-        logoutBtn.setBounds(450, 20, 80, 30);
+        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 16));
+        logoutBtn.setBounds(650, 20, 100, 40);
         logoutBtn.addActionListener(e -> {
             SessionManager.logout();
             JOptionPane.showMessageDialog(this, "Logged out successfully!");
@@ -263,6 +389,15 @@ public class SecondPage extends javax.swing.JFrame {
             dispose();
         });
         getContentPane().add(logoutBtn);
+        
+        // Add a footer with user info
+        UserDAO.User currentUser = SessionManager.getCurrentUser();
+        if (currentUser != null) {
+            JLabel userInfoLabel = new JLabel("Logged in as: " + currentUser.getName() + " (Librarian)");
+            userInfoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12));
+            userInfoLabel.setBounds(50, 520, 300, 20);
+            getContentPane().add(userInfoLabel);
+        }
         
         // Refresh the layout
         revalidate();

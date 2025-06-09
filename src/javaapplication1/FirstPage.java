@@ -16,7 +16,79 @@ public class FirstPage extends javax.swing.JFrame {
      * Creates new form FirstPage
      */
     public FirstPage() {
-        initComponents();
+        try {
+            initComponents();
+        } catch (Exception e) {
+            // If NetBeans form initialization fails, create a simple fallback UI
+            System.err.println("FirstPage form initialization failed, creating fallback UI: " + e.getMessage());
+            initSimpleLoginForm();
+        }
+    }
+    
+    /**
+     * Fallback login form when NetBeans form fails
+     */
+    private void initSimpleLoginForm() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Library Management System - Login");
+        setSize(500, 350);
+        setLocationRelativeTo(null);
+        getContentPane().setLayout(null);
+        
+        // Title
+        javax.swing.JLabel titleLabel = new javax.swing.JLabel();
+        titleLabel.setFont(new java.awt.Font("Segoe UI", 1, 28));
+        titleLabel.setText("Library Management System");
+        titleLabel.setBounds(50, 20, 400, 40);
+        getContentPane().add(titleLabel);
+        
+        // Email label and field
+        jLabel1 = new javax.swing.JLabel();
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 16));
+        jLabel1.setText("Email:");
+        jLabel1.setBounds(50, 100, 100, 25);
+        getContentPane().add(jLabel1);
+        
+        jTextField1 = new javax.swing.JTextField();
+        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jTextField1.setBounds(150, 100, 250, 30);
+        getContentPane().add(jTextField1);
+        
+        // Password label and field
+        jLabel2 = new javax.swing.JLabel();
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 16));
+        jLabel2.setText("Password:");
+        jLabel2.setBounds(50, 150, 100, 25);
+        getContentPane().add(jLabel2);
+        
+        jPasswordField2 = new javax.swing.JPasswordField();
+        jPasswordField2.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jPasswordField2.setBounds(150, 150, 250, 30);
+        getContentPane().add(jPasswordField2);
+        
+        // Login button
+        jButton1 = new javax.swing.JButton();
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 16));
+        jButton1.setText("Login");
+        jButton1.setBounds(150, 220, 100, 40);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1);
+        
+        // Sign up button
+        jButton2 = new javax.swing.JButton();
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 16));
+        jButton2.setText("Sign Up");
+        jButton2.setBounds(270, 220, 100, 40);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton2);
     }
 
     /**
@@ -139,23 +211,64 @@ public class FirstPage extends javax.swing.JFrame {
                 switch (user.getUserRole()) {
                     case MEMBER:
                         // Members go to HomePage
-                        HomePage hp = new HomePage();
-                        hp.setVisible(true);
+                        try {
+                            HomePage hp = new HomePage();
+                            hp.setVisible(true);
+                        } catch (Exception ex) {
+                            System.err.println("Failed to create HomePage: " + ex.getMessage());
+                            JOptionPane.showMessageDialog(this, 
+                                "Error loading home page. Using simple interface.", 
+                                "Warning", 
+                                JOptionPane.WARNING_MESSAGE);
+                            // Fallback to SecondPage
+                            SecondPage fallback = new SecondPage();
+                            fallback.setVisible(true);
+                        }
                         break;
                     case LIBRARIAN:
                         // Librarians go to SecondPage (main menu with book and user management)
-                        SecondPage sp = new SecondPage();
-                        sp.setVisible(true);
+                        try {
+                            SecondPage sp = new SecondPage();
+                            sp.setVisible(true);
+                        } catch (Exception ex) {
+                            System.err.println("Failed to create SecondPage for librarian: " + ex.getMessage());
+                            JOptionPane.showMessageDialog(this, 
+                                "Error loading management page: " + ex.getMessage(), 
+                                "Error", 
+                                JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            return;
+                        }
                         break;
                     case ADMIN:
                         // Admins go to SecondPage (main menu with full access)
-                        SecondPage asp = new SecondPage();
-                        asp.setVisible(true);
+                        try {
+                            SecondPage asp = new SecondPage();
+                            asp.setVisible(true);
+                        } catch (Exception ex) {
+                            System.err.println("Failed to create SecondPage for admin: " + ex.getMessage());
+                            JOptionPane.showMessageDialog(this, 
+                                "Error loading admin page: " + ex.getMessage(), 
+                                "Error", 
+                                JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            return;
+                        }
                         break;
                     default:
                         // Default to SecondPage
-                        SecondPage dsp = new SecondPage();
-                        dsp.setVisible(true);
+                        try {
+                            SecondPage dsp = new SecondPage();
+                            dsp.setVisible(true);
+                        } catch (Exception ex) {
+                            System.err.println("Failed to create default SecondPage: " + ex.getMessage());
+                            JOptionPane.showMessageDialog(this, 
+                                "Error loading page: " + ex.getMessage(), 
+                                "Error", 
+                                JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            return;
+                        }
                         break;
                 }
                 dispose();
