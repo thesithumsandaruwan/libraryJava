@@ -316,26 +316,41 @@ public class SecondPage extends javax.swing.JFrame {
      * Add navigation buttons for Librarian users
      */
     private void addLibrarianButtons() {
-        // Set a better window size for librarian view
-        setSize(800, 600);
+        // Set optimal window size for librarian view
+        setSize(900, 700);
         setLocationRelativeTo(null);
         
-        // Create a welcome message
-        JLabel welcomeLabel = new JLabel("Librarian Dashboard");
-        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 1, 32));
-        welcomeLabel.setBounds(250, 30, 300, 50);
-        getContentPane().add(welcomeLabel);
+        // Set background color for better appearance
+        getContentPane().setBackground(new java.awt.Color(245, 245, 245));
         
-        // Create section for book management
-        JLabel bookSectionLabel = new JLabel("Book Management");
-        bookSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
-        bookSectionLabel.setBounds(100, 120, 200, 30);
+        // Create header section
+        JLabel headerLabel = new JLabel("Library Management System");
+        headerLabel.setFont(new java.awt.Font("Segoe UI", 1, 28));
+        headerLabel.setForeground(new java.awt.Color(41, 128, 185));
+        headerLabel.setBounds(280, 20, 400, 40);
+        getContentPane().add(headerLabel);
+        
+        JLabel subtitleLabel = new JLabel("Librarian Dashboard");
+        subtitleLabel.setFont(new java.awt.Font("Segoe UI", 0, 16));
+        subtitleLabel.setForeground(new java.awt.Color(127, 140, 141));
+        subtitleLabel.setBounds(380, 60, 200, 25);
+        getContentPane().add(subtitleLabel);
+        
+        // Create main content area with organized sections
+        
+        // Section 1: Book Management (Left Column)
+        JLabel bookSectionLabel = new JLabel("📚 Book Management");
+        bookSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        bookSectionLabel.setForeground(new java.awt.Color(46, 204, 113));
+        bookSectionLabel.setBounds(80, 130, 250, 30);
         getContentPane().add(bookSectionLabel);
         
-        // Add Book Details button
-        JButton bookDetailsBtn = new JButton("Manage Books");
-        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
-        bookDetailsBtn.setBounds(100, 160, 200, 60);
+        JButton bookDetailsBtn = new JButton("<html><center>Manage Books<br><small>Add, Edit, Remove Books</small></center></html>");
+        bookDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        bookDetailsBtn.setBackground(new java.awt.Color(46, 204, 113));
+        bookDetailsBtn.setForeground(java.awt.Color.WHITE);
+        bookDetailsBtn.setBounds(80, 170, 250, 80);
+        bookDetailsBtn.setBorder(javax.swing.BorderFactory.createRaisedBevelBorder());
         bookDetailsBtn.addActionListener(e -> {
             Book_Details bd = new Book_Details();
             bd.setVisible(true);
@@ -343,16 +358,19 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(bookDetailsBtn);
         
-        // Create section for user management
-        JLabel userSectionLabel = new JLabel("User Management");
-        userSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
-        userSectionLabel.setBounds(400, 120, 200, 30);
+        // Section 2: User Management (Right Column)
+        JLabel userSectionLabel = new JLabel("👥 User Management");
+        userSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        userSectionLabel.setForeground(new java.awt.Color(52, 152, 219));
+        userSectionLabel.setBounds(450, 130, 250, 30);
         getContentPane().add(userSectionLabel);
         
-        // Add User Details button
-        JButton userDetailsBtn = new JButton("Manage Users");
-        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
-        userDetailsBtn.setBounds(400, 160, 200, 60);
+        JButton userDetailsBtn = new JButton("<html><center>Manage Users<br><small>View, Edit User Details</small></center></html>");
+        userDetailsBtn.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        userDetailsBtn.setBackground(new java.awt.Color(52, 152, 219));
+        userDetailsBtn.setForeground(java.awt.Color.WHITE);
+        userDetailsBtn.setBounds(450, 170, 250, 80);
+        userDetailsBtn.setBorder(javax.swing.BorderFactory.createRaisedBevelBorder());
         userDetailsBtn.addActionListener(e -> {
             User_Details ud = new User_Details();
             ud.setVisible(true);
@@ -360,16 +378,19 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(userDetailsBtn);
         
-        // Create section for borrowing management
-        JLabel borrowSectionLabel = new JLabel("Borrowing Management");
-        borrowSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
-        borrowSectionLabel.setBounds(250, 250, 250, 30);
+        // Section 3: Borrowing Management (Center, Second Row)
+        JLabel borrowSectionLabel = new JLabel("📖 Borrowing Management");
+        borrowSectionLabel.setFont(new java.awt.Font("Segoe UI", 1, 18));
+        borrowSectionLabel.setForeground(new java.awt.Color(230, 126, 34));
+        borrowSectionLabel.setBounds(265, 290, 300, 30);
         getContentPane().add(borrowSectionLabel);
         
-        // Add Borrowing Management button
-        JButton borrowingBtn = new JButton("Manage Borrowing");
-        borrowingBtn.setFont(new java.awt.Font("Segoe UI", 1, 18));
-        borrowingBtn.setBounds(250, 290, 200, 60);
+        JButton borrowingBtn = new JButton("<html><center>Manage Borrowing<br><small>Issue & Return Books</small></center></html>");
+        borrowingBtn.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        borrowingBtn.setBackground(new java.awt.Color(230, 126, 34));
+        borrowingBtn.setForeground(java.awt.Color.WHITE);
+        borrowingBtn.setBounds(265, 330, 250, 80);
+        borrowingBtn.setBorder(javax.swing.BorderFactory.createRaisedBevelBorder());
         borrowingBtn.addActionListener(e -> {
             BorrowingManagement bm = new BorrowingManagement();
             bm.setVisible(true);
@@ -377,27 +398,102 @@ public class SecondPage extends javax.swing.JFrame {
         });
         getContentPane().add(borrowingBtn);
         
-        // Add logout button in a better position
-        JButton logoutBtn = new JButton("Logout");
-        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 16));
-        logoutBtn.setBounds(650, 20, 100, 40);
-        logoutBtn.addActionListener(e -> {
-            SessionManager.logout();
-            JOptionPane.showMessageDialog(this, "Logged out successfully!");
-            FirstPage fp = new FirstPage();
-            fp.setVisible(true);
+        // Quick Action Buttons (Third Row)
+        JLabel quickActionsLabel = new JLabel("⚡ Quick Actions");
+        quickActionsLabel.setFont(new java.awt.Font("Segoe UI", 1, 16));
+        quickActionsLabel.setForeground(new java.awt.Color(155, 89, 182));
+        quickActionsLabel.setBounds(80, 450, 200, 25);
+        getContentPane().add(quickActionsLabel);
+        
+        JButton quickBorrowBtn = new JButton("Quick Borrow");
+        quickBorrowBtn.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        quickBorrowBtn.setBackground(new java.awt.Color(155, 89, 182));
+        quickBorrowBtn.setForeground(java.awt.Color.WHITE);
+        quickBorrowBtn.setBounds(80, 480, 140, 40);
+        quickBorrowBtn.addActionListener(e -> {
+            // Navigate to borrowing with quick mode
+            BorrowingManagement bm = new BorrowingManagement();
+            bm.setVisible(true);
             dispose();
         });
-        getContentPane().add(logoutBtn);
+        getContentPane().add(quickBorrowBtn);
         
-        // Add a footer with user info
+        JButton quickReturnBtn = new JButton("Quick Return");
+        quickReturnBtn.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        quickReturnBtn.setBackground(new java.awt.Color(155, 89, 182));
+        quickReturnBtn.setForeground(java.awt.Color.WHITE);
+        quickReturnBtn.setBounds(240, 480, 140, 40);
+        quickReturnBtn.addActionListener(e -> {
+            // Navigate to borrowing with return mode
+            BorrowingManagement bm = new BorrowingManagement();
+            bm.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(quickReturnBtn);
+        
+        JButton searchBtn = new JButton("Search Books");
+        searchBtn.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        searchBtn.setBackground(new java.awt.Color(155, 89, 182));
+        searchBtn.setForeground(java.awt.Color.WHITE);
+        searchBtn.setBounds(400, 480, 140, 40);
+        searchBtn.addActionListener(e -> {
+            Book_Details bd = new Book_Details();
+            bd.setVisible(true);
+            dispose();
+        });
+        getContentPane().add(searchBtn);
+        
+        JButton viewReportsBtn = new JButton("View Reports");
+        viewReportsBtn.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        viewReportsBtn.setBackground(new java.awt.Color(155, 89, 182));
+        viewReportsBtn.setForeground(java.awt.Color.WHITE);
+        viewReportsBtn.setBounds(560, 480, 140, 40);
+        viewReportsBtn.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, 
+                "Reports feature coming soon!", 
+                "Reports", 
+                JOptionPane.INFORMATION_MESSAGE);
+        });
+        getContentPane().add(viewReportsBtn);
+        
+        // Footer section
         UserDAO.User currentUser = SessionManager.getCurrentUser();
         if (currentUser != null) {
-            JLabel userInfoLabel = new JLabel("Logged in as: " + currentUser.getName() + " (Librarian)");
+            JLabel userInfoLabel = new JLabel("👤 Logged in as: " + currentUser.getName() + " (Librarian)");
             userInfoLabel.setFont(new java.awt.Font("Segoe UI", 0, 12));
-            userInfoLabel.setBounds(50, 520, 300, 20);
+            userInfoLabel.setForeground(new java.awt.Color(127, 140, 141));
+            userInfoLabel.setBounds(50, 580, 400, 20);
             getContentPane().add(userInfoLabel);
+            
+            // Add current date/time
+            JLabel dateLabel = new JLabel("📅 " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy - HH:mm")));
+            dateLabel.setFont(new java.awt.Font("Segoe UI", 0, 12));
+            dateLabel.setForeground(new java.awt.Color(127, 140, 141));
+            dateLabel.setBounds(50, 600, 300, 20);
+            getContentPane().add(dateLabel);
         }
+        
+        // Logout button - positioned prominently
+        JButton logoutBtn = new JButton("🚪 Logout");
+        logoutBtn.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        logoutBtn.setBackground(new java.awt.Color(231, 76, 60));
+        logoutBtn.setForeground(java.awt.Color.WHITE);
+        logoutBtn.setBounds(750, 20, 120, 45);
+        logoutBtn.setBorder(javax.swing.BorderFactory.createRaisedBevelBorder());
+        logoutBtn.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(this, 
+                "Are you sure you want to logout?", 
+                "Confirm Logout", 
+                JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                SessionManager.logout();
+                JOptionPane.showMessageDialog(this, "Logged out successfully!");
+                FirstPage fp = new FirstPage();
+                fp.setVisible(true);
+                dispose();
+            }
+        });
+        getContentPane().add(logoutBtn);
         
         // Refresh the layout
         revalidate();
